@@ -1,13 +1,12 @@
 import React from 'react';
 
-function Guess() {
+function Guess({ appendToGuesses }) {
   const [guess, setGuess] = React.useState('');
 
   const submitGuess = (event) => {
     event.preventDefault();
 
-    console.log(guess);
-
+    appendToGuesses(guess);
     setGuess('');
   };
   return (
