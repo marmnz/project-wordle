@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Guess({ appendToGuesses }) {
+function GuessInput({ appendToGuesses }) {
   const [guess, setGuess] = React.useState('');
 
   const submitGuess = (event) => {
@@ -26,4 +26,4 @@ function Guess({ appendToGuesses }) {
   );
 }
 
-export default Guess;
+export default GuessInput;
