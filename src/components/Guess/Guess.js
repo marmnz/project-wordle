@@ -3,13 +3,13 @@ import { range } from '../../utils';
 
 function Guess({ guess }) {
   const letters =
-    guess.word.length > 0 ? guess.word.split('') : range(0, 5).map(() => '');
+    guess.letters?.length > 0 ? guess.letters : range(0, 5).map(() => '');
 
   return (
     <p className="guess">
       {letters.map((letter, index) => (
-        <span key={`${guess.id}-${index}`} className="cell">
-          {letter}
+        <span key={index} className={`cell ${letter.status ?? ''}`}>
+          {letter.letter}
         </span>
       ))}
     </p>
