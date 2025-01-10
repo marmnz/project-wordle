@@ -4,9 +4,7 @@ import Banner from '../Banner';
 function LoseBanner({ answer }) {
   return (
     <Banner className="sad">
-      <p>
-        Sorry, the correct answer is <strong>{answer}</strong>.
-      </p>
+      Sorry, the correct answer is <strong>{answer}</strong>.
     </Banner>
   );
 }

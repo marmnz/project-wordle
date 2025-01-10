@@ -1,7 +1,6 @@
 import React from 'react';
 
 function Banner({ className, children }) {
-  console.log(children);
   return (
     <div>
       <div className={`${className} banner`}>

@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { range, sample } from '../../utils';
+import { sample } from '../../utils';
 import { WORDS } from '../../data';
 import GuessInput from '../GuessInput';
 import GuessList from '../GuessList';
-import WinBanner from '../WinBanner';
-import LoseBanner from '../LoseBanner';
 import { NUM_OF_GUESSES_ALLOWED } from '../../constants';
 import { checkGuess } from '../../game-helpers';
+import EndGame from '../EndGame/EndGame';
 
 // Pick a random word on every pageload.
 const answer = sample(WORDS);
@@ -17,38 +16,32 @@ console.info({ answer });
 function Game() {
   const [guesses, setGuesses] = React.useState([]);
 
-  const [attempt, setAttempt] = React.useState(0);
+  const [gameOver, setGameOver] = React.useState(false);
 
-  const [gameState, setGameState] = React.useState();
+  const wordIsCorrect = (word) => {
+    return word.filter((letter) => letter.status === 'correct').length === 5;
+  };
 
   const makeGuess = (guess) => {
-    if (attempt >= NUM_OF_GUESSES_ALLOWED || gameState) {
-      return;
-    }
-
-    let newGuesses = [...guesses];
-
     const checkedGuess = checkGuess(guess, answer);
-    const status =
-      checkedGuess.filter((letter) => letter.status === 'correct').length === 5
-        ? 'win'
-        : 'lose';
-    newGuesses[attempt] = { id: attempt, letters: checkedGuess };
+
+    let newGuesses = [...guesses, { id: Math.random(), letters: checkedGuess }];
+
     setGuesses(newGuesses);
-    setGameState(
-      status === 'win' || newGuesses.length === NUM_OF_GUESSES_ALLOWED
-        ? status
-        : undefined
-    );
-    setAttempt(attempt + 1);
+
+    if (
+      newGuesses.length >= NUM_OF_GUESSES_ALLOWED ||
+      wordIsCorrect(checkedGuess)
+    ) {
+      setGameOver(true);
+    }
   };
 
   return (
     <div>
-      {gameState === 'win' && <WinBanner guesses={guesses} />}
-      {gameState === 'lose' && <LoseBanner answer={answer} />}
+      <EndGame guesses={guesses} answer={answer} wordIsCorrect={wordIsCorrect} />
       <GuessList guesses={guesses} />
-      <GuessInput makeGuess={makeGuess} isDisabled={!!gameState} />
+      <GuessInput makeGuess={makeGuess} isDisabled={!!gameOver} />
     </div>
   );
 }
