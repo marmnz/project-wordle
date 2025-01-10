@@ -3,7 +3,7 @@ import { range } from '../../utils';
 
 function Guess({ guess }) {
   const letters =
-    guess.letters?.length > 0 ? guess.letters : range(0, 5).map(() => '');
+    guess?.letters?.length > 0 ? guess.letters : range(0, 5).map(() => '');
 
   return (
     <p className="guess">

@@ -1,18 +1,19 @@
 import React from 'react';
 
-function GuessInput({ appendToGuesses }) {
+function GuessInput({ makeGuess, isDisabled }) {
   const [guess, setGuess] = React.useState('');
 
   const submitGuess = (event) => {
     event.preventDefault();
 
-    appendToGuesses(guess);
+    makeGuess(guess);
     setGuess('');
   };
   return (
     <form className="guess-input-wrapper" onSubmit={submitGuess}>
       <label htmlFor="guess-input">Enter guess:</label>
       <input
+        disabled={isDisabled}
         title="A five-letter word"
         minLength="5"
         maxLength="5"

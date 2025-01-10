@@ -4,6 +4,8 @@ import { range, sample } from '../../utils';
 import { WORDS } from '../../data';
 import GuessInput from '../GuessInput';
 import GuessList from '../GuessList';
+import WinBanner from '../WinBanner';
+import LoseBanner from '../LoseBanner';
 import { NUM_OF_GUESSES_ALLOWED } from '../../constants';
 import { checkGuess } from '../../game-helpers';
 
@@ -13,27 +15,40 @@ const answer = sample(WORDS);
 console.info({ answer });
 
 function Game() {
-  const [guesses, setGuesses] = React.useState(
-    range(0, NUM_OF_GUESSES_ALLOWED).map((num) => ({ id: num, letters: [] }))
-  );
+  const [guesses, setGuesses] = React.useState([]);
 
   const [attempt, setAttempt] = React.useState(0);
 
-  const appendToGuesses = (guess) => {
-    if (attempt >= NUM_OF_GUESSES_ALLOWED) {
+  const [gameState, setGameState] = React.useState();
+
+  const makeGuess = (guess) => {
+    if (attempt >= NUM_OF_GUESSES_ALLOWED || gameState) {
       return;
     }
 
     let newGuesses = [...guesses];
-    newGuesses[attempt] = { id: attempt, letters: checkGuess(guess, answer) };
+
+    const checkedGuess = checkGuess(guess, answer);
+    const status =
+      checkedGuess.filter((letter) => letter.status === 'correct').length === 5
+        ? 'win'
+        : 'lose';
+    newGuesses[attempt] = { id: attempt, letters: checkedGuess };
     setGuesses(newGuesses);
+    setGameState(
+      status === 'win' || newGuesses.length === NUM_OF_GUESSES_ALLOWED
+        ? status
+        : undefined
+    );
     setAttempt(attempt + 1);
   };
 
   return (
     <div>
+      {gameState === 'win' && <WinBanner guesses={guesses} />}
+      {gameState === 'lose' && <LoseBanner answer={answer} />}
       <GuessList guesses={guesses} />
-      <GuessInput appendToGuesses={appendToGuesses} />
+      <GuessInput makeGuess={makeGuess} isDisabled={!!gameState} />
     </div>
   );
 }
